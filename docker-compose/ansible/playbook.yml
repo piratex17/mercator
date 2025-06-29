@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    environment {
+        DOMAIN = 'cartographie.learning.local'
+        CERTS_DIR = 'PV/nginx/certs'
+        NGINX_CONF = 'PV/nginx/nginx.conf'
+        MERCATOR_ENV = 'env/mercator.env'
+        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'master', url:'https://github.com/dbarzin/mercator.git'
+            }
+        }
+
+        stage('Check Docker Installation') {
+            steps {
+                sh 'docker --version || (echo "Docker is not installed" && exit 1)'
+            }
+        }
+
+        stage('Prepare Certificates') {
+            steps {
+                dir('docker-compose') {
+                    sh 'ansible-playbook ../../playbook.yml'
+                }
+            }
+        }
+
+
+
+    }
+
+}
