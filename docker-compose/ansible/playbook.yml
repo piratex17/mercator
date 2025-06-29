@@ -1,38 +1,38 @@
-pipeline {
-    agent any
+---
+- name: Setup Mercator Environment
+  hosts: localhost
+  connection: local
+  become: no
+  vars:
+      domain: cartographie.learning.local
+      certs_dir: "../PV/nginx/certs"
+      nginx_conf: "../PV/nginx/nginx.conf"
+      mercator_env: "../env/mercator.env"
+      docker_compose_file: "../docker-compose.yml"
 
-    environment {
-        DOMAIN = 'cartographie.learning.local'
-        CERTS_DIR = 'PV/nginx/certs'
-        NGINX_CONF = 'PV/nginx/nginx.conf'
-        MERCATOR_ENV = 'env/mercator.env'
-        DOCKER_COMPOSE_FILE = 'docker-compose.yml'
-    }
+  tasks:
+      - name: Create certificates directory
+        file:
+            path: "{{ certs_dir }}"
+            state: directory
+            mode: '0755'
 
-    stages {
+      - name: Generate self-signed certificate
+        command: openssl req -x509 -nodes -days 365 -newkey rsa:2048
+            -keyout "{{ certs_dir }}/{{ domain }}.key"
+            -out "{{ certs_dir }}/{{ domain }}.crt"
+            -subj "/CN={{ domain }}/O=Mercator/C=BE"
+        args:
+            creates: "{{ certs_dir }}/{{ domain }}.crt"
 
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url:'https://github.com/dbarzin/mercator.git'
-            }
-        }
+      - name: Ensure nginx configuration exists
+        template:
+            src: templates/nginx.conf.j2
+            dest: "{{ nginx_conf }}"
+            mode: '0644'
 
-        stage('Check Docker Installation') {
-            steps {
-                sh 'docker --version || (echo "Docker is not installed" && exit 1)'
-            }
-        }
-
-        stage('Prepare Certificates') {
-            steps {
-                dir('docker-compose') {
-                    sh 'ansible-playbook ../../playbook.yml'
-                }
-            }
-        }
-
-
-
-    }
-
-}
+      - name: Ensure environment file exists
+        template:
+            src: templates/mercator.env.j2
+            dest: "{{ mercator_env }}"
+            mode: '0644'
