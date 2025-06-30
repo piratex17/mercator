@@ -1,8 +1,6 @@
 ---
 - name: Setup Mercator Environment
   hosts: all
-  connection: local
-  become: no
   vars:
     domain: cartographie.learning.local
     certs_dir: "./docker-compose//PV/nginx/certs"
