@@ -72,7 +72,7 @@
         openssl req -x509 -nodes -days 365 -newkey rsa:2048
         -keyout "{{ certs_dir }}/{{ domain }}.key"
         -out "{{ certs_dir }}/{{ domain }}.crt"
-        -subj "/CN={{ domain }}/O=Mercator/C=BE"
+        -subj "/CN={{ domain }}/O=CD976/L=Mamoudzou/C=YT"
       args:
         creates: "{{ certs_dir }}/{{ domain }}.crt"
 
