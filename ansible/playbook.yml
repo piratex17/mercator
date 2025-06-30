@@ -1,6 +1,6 @@
 ---
 - name: Setup Mercator Environment
-  hosts: localhost
+  hosts: lsocalhost
   connection: local
   become: no
   vars:

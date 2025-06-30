@@ -1,0 +1,6 @@
+all:
+  hosts:
+    client00:
+      ansible_host: 54.91.97.250
+      ansible_user: mkombe-deploy
+      ansible_ssh_private_key_file: clientkey.pem
