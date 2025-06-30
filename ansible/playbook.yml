@@ -4,85 +4,86 @@
   connection: local
   become: no
   vars:
-      domain: cartographie.learning.local
-      certs_dir: "./docker-compose//PV/nginx/certs"
-      nginx_conf: "./docker-compose/PV/nginx/nginx.conf"
-      mercator_env: "./docker-compose/PV/env/mercator.env"
-      docker_compose_file: "./docker-compose/docker-compose.yml"
+    domain: cartographie.learning.local
+    certs_dir: "./docker-compose//PV/nginx/certs"
+    nginx_conf: "./docker-compose/PV/nginx/nginx.conf"
+    mercator_env: "./docker-compose/PV/env/mercator.env"
+    docker_compose_file: "./docker-compose/docker-compose.yml"
 
   tasks:
-      - name: Print env variable
-        debug:
+    - name: Print env variable
+      debug:
         msg: "print env variable {{ env }}"
 
-      - name: Install required system packages
-        become: yes
-        package:
-          name:
-            - apt-transport-https
-            - ca-certificates
-            - curl
-            - software-properties-common
-          state: present
-        when: ansible_os_family == 'Debian'
+    - name: Install required system packages
+      become: yes
+      package:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+      when: ansible_os_family == 'Debian'
 
-      - name: Add Docker GPG key
-        become: yes
-        apt_key:
-          url: https://download.docker.com/linux/ubuntu/gpg
-          state: present
-        when: ansible_os_family == 'Debian'
+    - name: Add Docker GPG key
+      become: yes
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when: ansible_os_family == 'Debian'
 
-      - name: Add Docker repository
-        become: yes
-        apt_repository:
-          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
-          state: present
-        when: ansible_os_family == 'Debian'
+    - name: Add Docker repository
+      become: yes
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+      when: ansible_os_family == 'Debian'
 
-      - name: Install Docker
-        become: yes
-        package:
-          name: docker-ce
-          state: present
-        when: ansible_os_family == 'Debian'
+    - name: Install Docker
+      become: yes
+      package:
+        name: docker-ce
+        state: present
+      when: ansible_os_family == 'Debian'
 
-      - name: Install pip3
-        become: yes
-        package:
-          name: python3-pip
-          state: present
-        when: ansible_os_family == 'Debian'
+    - name: Install pip3
+      become: yes
+      package:
+        name: python3-pip
+        state: present
+      when: ansible_os_family == 'Debian'
 
-      - name: Install Docker Compose using pip3
-        become: yes
-        pip:
-          name: docker-compose
-          executable: pip3
-        when: ansible_os_family == 'Debian'
+    - name: Install Docker Compose using pip3
+      become: yes
+      pip:
+        name: docker-compose
+        executable: pip3
+      when: ansible_os_family == 'Debian'
 
-      - name: Create certificates directory
-        file:
-            path: "{{ certs_dir }}"
-            state: directory
-            mode: '0755'
+    - name: Create certificates directory
+      file:
+        path: "{{ certs_dir }}"
+        state: directory
+        mode: '0755'
 
-      - name: Generate self-signed certificate
-        command: openssl req -x509 -nodes -days 365 -newkey rsa:2048
-            -keyout "{{ certs_dir }}/{{ domain }}.key"
-            -out "{{ certs_dir }}/{{ domain }}.crt"
-            -subj "/CN={{ domain }}/O=Mercator/C=BE"
-        args:
-            creates: "{{ certs_dir }}/{{ domain }}.crt"
+    - name: Generate self-signed certificate
+      command: >
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048
+        -keyout "{{ certs_dir }}/{{ domain }}.key"
+        -out "{{ certs_dir }}/{{ domain }}.crt"
+        -subj "/CN={{ domain }}/O=Mercator/C=BE"
+      args:
+        creates: "{{ certs_dir }}/{{ domain }}.crt"
 
-      - name: Ensure nginx configuration exists
-        template:
-            src: templates/nginx.conf.j2
-            dest: "{{ nginx_conf }}"
-            mode: '0644'
+    - name: Ensure nginx configuration exists
+      template:
+        src: templates/nginx.conf.j2
+        dest: "{{ nginx_conf }}"
+        mode: '0644'
 
-      - name: Ensure environment file exists
-        template:
-            src: templates/mercator.env.j2
-            dest: "{{ mercator_env }}"
-            mode: '0644'
+    - name: Ensure environment file exists
+      template:
+        src: templates/mercator.env.j2
+        dest: "{{ mercator_env }}"
+        mode: '0644'
