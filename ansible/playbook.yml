@@ -15,7 +15,7 @@
       debug:
         msg: "print env variable {{ env }}"
 
-    - name: Install required system packages
+    - name: Install required system packages (Debian/Ubuntu)
       become: yes
       package:
         name:
@@ -24,42 +24,42 @@
           - curl
           - software-properties-common
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Add Docker GPG key
+    - name: Add Docker GPG key (Debian/Ubuntu)
       become: yes
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Add Docker repository
+    - name: Add Docker repository (Debian/Ubuntu)
       become: yes
       apt_repository:
         repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Install Docker
+    - name: Install Docker (Debian/Ubuntu)
       become: yes
       package:
         name: docker-ce
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Install pip3
+    - name: Install pip3 (Debian/Ubuntu)
       become: yes
       package:
         name: python3-pip
         state: present
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: Install Docker Compose using pip3
+    - name: Install Docker Compose using pip3 (Debian/Ubuntu)
       become: yes
       pip:
         name: docker-compose
         executable: pip3
-      when: ansible_os_family == 'Debian'
+      when: ansible_os_family == 'Debian' or ansible_distribution == 'Ubuntu'
 
     - name: Create certificates directory
       file:
