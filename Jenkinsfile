@@ -5,9 +5,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
 			steps {
-				dir('docker-compose') {
-					sh 'ansible-playbook ./ansible/playbook.yml --extra-vars "env=préprod"'
-                }
+				sh 'ansible-playbook ./ansible/playbook.yml --extra-vars "env=préprod"'
             }
         }
 
