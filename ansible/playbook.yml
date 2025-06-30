@@ -5,10 +5,10 @@
   become: no
   vars:
       domain: cartographie.learning.local
-      certs_dir: "../PV/nginx/certs"
-      nginx_conf: "../PV/nginx/nginx.conf"
-      mercator_env: "../env/mercator.env"
-      docker_compose_file: "../docker-compose.yml"
+      certs_dir: "./docker-compose//PV/nginx/certs"
+      nginx_conf: "./docker-compose/PV/nginx/nginx.conf"
+      mercator_env: "./docker-compose/PV/env/mercator.env"
+      docker_compose_file: "./docker-compose/docker-compose.yml"
 
   tasks:
       - name: Install required system packages
