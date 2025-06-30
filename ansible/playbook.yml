@@ -14,6 +14,7 @@
       - name: Print env variable
         debug:
         msg: "print env variable {{ env }}"
+
       - name: Install required system packages
         become: yes
         package:
