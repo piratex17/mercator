@@ -6,7 +6,7 @@ pipeline {
         stage('Run Ansible Playbook') {
 			dir('ansible') {
 				steps {
-					sh 'ansible-playbook ./ansible/playbook.yml --extra-vars "env=préprod"'
+					sh 'ansible-playbook playbook.yml --extra-vars "env=préprod"'
 				}
 			}
         }
